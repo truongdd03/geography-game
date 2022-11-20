@@ -99,19 +99,19 @@ string condition2(Graph const &g) {
   return condition;
 }
 
-// Step (i-1)-th must be adjacent to step i-th
+// Step i-th must be adjacent to step (i+1)-th
 string condition3(Graph &g) {
   write("\n\n");
   vector<string> vars;
-  for (int i = 2; i <= g.depth; ++i) {
+  for (int i = 1; i < g.depth; ++i) {
     for (auto node : g.values) {
-      vector<string> parents = g.getParents(node);
-      if (parents.size() == 0) continue;
-      for (string &parent : parents) parent = to_string(i - 1) + parent;
-      parents.push_back("-" + to_string(i) + node);
-      string const subCondition = get();
-      Or(subCondition, parents);
-      vars.push_back(subCondition);
+      vector<string> children = g.getChildren(node);
+      if (children.size() == 0) continue;
+      for (string &child : children) child = to_string(i + 1) + child;
+
+      children.push_back("-" + to_string(i) + node);
+      vars.push_back(get());
+      Or(vars.back(), children);
     }
   }
   string const condition = get();

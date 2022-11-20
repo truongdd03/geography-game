@@ -15,6 +15,9 @@ run: clean all
 	./$(BIN)/$(EXECUTABLE) < ./input.txt
 	./lib/quabs --partial-assignment ./test.qcir
 
+solve: clean all
+	./lib/quabs --partial-assignment ./test.qcir
+
 $(BIN)/$(EXECUTABLE): $(SRC)/*.cpp
 	$(CXX) $(CXX_FLAGS) -I$(INCLUDE) $^ -o $@
 
