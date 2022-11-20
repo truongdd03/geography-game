@@ -40,6 +40,8 @@ Ex:
 
 ### Statisfiable
 
+There's no way the first user can win.
+
 ```
 V s1v1 s2v2 s3v3 ...
 r SAT
@@ -48,8 +50,11 @@ r SAT
 `s1v1` is positive if value `v1` is chosen at step `s1`. Otherwise, it's negative.
 
 **Ex:** the output of the graph above:
+
+Output the steps that the first user can win.
+
 ```
-V 11 -12 -13 -14 -16 -17 -15 -31 -32 -33 -34 36 -37 -35 -21 -22 23 -24 -26 -27 -25 0
+V 11 -12 -13 -14 -16 -17 -15 -21 -22 23 -24 -26 -27 -25 -31 -32 -33 -34 36 -37 -35 -41 -42 -43 -44 -46 -47 -45 0
 r SAT
 ```
 `11, 23, and 36` are postive. That means:
