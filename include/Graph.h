@@ -13,49 +13,55 @@ using namespace std;
 class Graph {
  private:
   void read();
-  void dfs(Node *node, int depth);
 
  public:
   int depth = 0;
-  Node *root = nullptr;
-  vector<vector<string>> variablesByLevel = {};
-  unordered_map<string, Node *> val_to_node = {};
+  string root;
   vector<string> values;
+  unordered_map<string, unordered_map<string, bool>> edges;
 
   void init();
+
+  vector<string> getChildren(string const &node);
+  vector<string> getParents(string const &node);
 };
 
 using namespace std;
 
 void Graph::read() {
-  string root_val;
-  cin >> root_val;
-  root = new Node(root_val, nullptr, {});
+  cin >> root;
   depth = 1;
-  val_to_node[root_val] = root;
 
   string u, v;
   while (cin >> u >> v) {
-    if (val_to_node.find(u) == val_to_node.end())
-      throw invalid_argument(u + " is used before define");
-    if (val_to_node.find(v) == val_to_node.end()) {
-      val_to_node[v] = new Node(v, val_to_node[u], {});
-    }
-    val_to_node[u]->children.push_back(val_to_node[v]);
-    depth = max(depth, int(val_to_node[u]->children.size() + 1));
-  }
-
-  for (auto e : val_to_node) {
-    if (e.first != root_val) {
-      values.push_back(e.first);
-    }
+    edges[u][v] = 1;
+    depth = max(depth, int(edges[u].size() + 1));
+    if (find(values.begin(), values.end(), u) == values.end() && u != root)
+      values.push_back(u);
+    if (find(values.begin(), values.end(), v) == values.end() && v != root)
+      values.push_back(v);
   }
 }
 
-void Graph::init() {
-  read();
-  // Node *tmp = root;
-  // dfs(tmp, 0);
+void Graph::init() { read(); }
+
+vector<string> Graph::getChildren(string const &node) {
+  vector<string> children;
+  for (auto e : edges[node]) {
+    children.push_back(e.first);
+  }
+  return children;
+}
+
+vector<string> Graph::getParents(string const &node) {
+  vector<string> parents;
+  for (string const &u : values) {
+    if (u == node) continue;
+    if (edges[u].find(node) != edges[u].end()) {
+      parents.push_back(u);
+    }
+  }
+  return parents;
 }
 
 #endif

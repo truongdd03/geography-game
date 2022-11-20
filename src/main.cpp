@@ -82,19 +82,33 @@ string condition1(Graph const &g) {
 string condition2(Graph const &g) { write("\n\n"); }
 
 // Step (i-1)-th must be adjacent to step i-th
-string condition3(Graph const &g) { 
+string condition3(Graph &g) { 
   write("\n\n");
-  
+  vector<string> vars;
+  for (int i = 2; i <= g.depth; ++i) {
+    for (auto node : g.values) {
+      vector<string> parents = g.getParents(node);
+      if (parents.size() == 0) continue;
+      for (string &parent : parents) parent = to_string(i - 1) + parent;
+      parents.push_back("-" + to_string(i) + node);
+      string const subCondition = get();
+      Or(subCondition, parents);
+      vars.push_back(subCondition);
+    }
+  }
+  string const condition = get();
+  And(condition, vars);
+  return condition;
 }
 
 // First step must be adjacent to root
 // (11 V 12 V 13 ...)
-string condition4(Graph const &g) {
+string condition4(Graph &g) {
   write("\n\n");
   string const condition = get();
   vector<string> vars;
-  for (auto node : g.root->children) {
-    vars.push_back("1" + node->val);
+  for (string const &node : g.getChildren(g.root)) {
+    vars.push_back("1" + node);
   }
   Or(condition, vars);
   return condition;
@@ -105,7 +119,7 @@ void solve() {
   g.init();
 
   headings(g);
-  vector<string> vars = {condition1(g), condition4(g)};
+  vector<string> vars = {condition1(g), condition3(g), condition4(g)};
 
   write("\n\n");
   And("999", vars);
