@@ -4,9 +4,15 @@
 
 using namespace std;
 
-void write(string const &s) {
+void clear() {
   ofstream file;
   file.open("./test.qcir");
+  file.close();
+}
+
+void write(string const &s) {
+  ofstream file;
+  file.open("./test.qcir", std::ios::app);
   file << s;
   file.close();
 }

@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+void clear();
+
 void write(std::string const &);
 
 void addParams(std::vector<std::string> const &);
