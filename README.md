@@ -44,7 +44,7 @@ Player 2 chooses 3
 Player 1 chooses 6
 ```
 
-## Usage
+## Internal Usage
 
 ### Operators.h > Exists
 `Exists(vector<string> arr)` => exists(arr[0], arr[1], ...)
