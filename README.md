@@ -34,35 +34,15 @@ Ex:
 
 ## Ouput format
 
-### Unsatisfiable
-
-`r UNSAT`
-
-### Statisfiable
-
-There's no way the first user can win.
-
-```
-V s1v1 s2v2 s3v3 ...
-r SAT
-```
-
-`s1v1` is positive if value `v1` is chosen at step `s1`. Otherwise, it's negative.
+If there's a way for the first user to win, print out the steps.
 
 **Ex:** the output of the graph above:
 
-Output the steps that the first user can win.
-
 ```
-V 11 -12 -13 -14 -16 -17 -15 -21 -22 23 -24 -26 -27 -25 -31 -32 -33 -34 36 -37 -35 -41 -42 -43 -44 -46 -47 -45 0
-r SAT
+Player 1 chooses 1
+Player 2 chooses 3
+Player 1 chooses 6
 ```
-`11, 23, and 36` are postive. That means:
-
-- Step 1: Choose node 1
-- Step 2: Choose node 3
-- Step 3: Choose node 6
-
 
 ## Usage
 
@@ -84,11 +64,11 @@ r SAT
 
 `write(string s)` => write a string to `./test.qcir`.
 
-### main.cpp > get
+### solver.cpp > get
 
 `get()` returns the next unused variable.
 
-### main.cpp > getMultiple
+### solver.cpp > getMultiple
 
 `getMultiple(int cnt)` return a vector contains `cnt` unused variables.
 
