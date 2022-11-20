@@ -38,6 +38,7 @@ void headings(Graph const &g) {
   }
   Exists(odd);
   Forall(even);
+  write("output(999)");
 }
 
 // Exactly one node is chosen at each step
@@ -77,12 +78,37 @@ string condition1(Graph const &g) {
   return condition;
 }
 
+//
+string condition2(Graph const &g) { write("\n\n"); }
+
+// Step (i-1)-th must be adjacent to step i-th
+string condition3(Graph const &g) { 
+  write("\n\n");
+  
+}
+
+// First step must be adjacent to root
+// (11 V 12 V 13 ...)
+string condition4(Graph const &g) {
+  write("\n\n");
+  string const condition = get();
+  vector<string> vars;
+  for (auto node : g.root->children) {
+    vars.push_back("1" + node->val);
+  }
+  Or(condition, vars);
+  return condition;
+}
+
 void solve() {
   Graph g;
   g.init();
 
   headings(g);
-  condition1(g);
+  vector<string> vars = {condition1(g), condition4(g)};
+
+  write("\n\n");
+  And("999", vars);
 }
 
 int main() {
