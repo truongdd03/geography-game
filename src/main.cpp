@@ -1,40 +1,85 @@
+#include <Graph.h>
 #include <operators.h>
-#include <Node.h>
 
 #include <fstream>
 #include <iostream>
+#include <stdexcept>
 #include <unordered_map>
 #include <vector>
-#include <stdexcept>
 
 using namespace std;
 
-Node *root;
-unordered_map<string, Node *> val_to_node;
+int variable = 100; // Start at 100
 
-void read() {
-  string root_val;
-  cin >> root_val;
-  write(root_val);
-  root = new Node(root_val, {});
-  val_to_node[root_val] = root;
+string get() {
+  return to_string(variable++);
+}
 
-  string u, v;
-  while (cin >> u >> v) {
-    if (val_to_node.find(u) == val_to_node.end()) throw invalid_argument(u + " is used before define");
-    if (val_to_node.find(v) == val_to_node.end()) {
-      val_to_node[v] = new Node(v, {});
+vector<string> getMultiple(int cnt) {
+  vector<string> vt;
+  for (int i = 0; i < cnt; ++i) {
+    vt.push_back(to_string(variable + i));
+  }
+  variable += cnt;
+  return vt;
+}
+
+void headings(Graph const &g) {
+  write("#QCIR-G14\n");
+  for (int i = 1; i <= g.depth; ++i) {
+    if (i % 2 == 0) {
+      
     }
-    val_to_node[u]->children.push_back(val_to_node[v]);
   }
 }
 
-void solve() {}
+// Exactly one node is chosen at each step
+string condition1(Graph const &g) {
+  write("\n\n");
+  // At least 1 node is chosen at every step
+  // (11 v 12 v ...) ^ (21 v 22 v ...) ^ ...
+  string const subCondition1 = get();
+  vector<string> vars = getMultiple(g.depth);
+  for (int i = 1; i <= g.depth; ++i) {
+    vector<string> vvars;
+    for (auto e : g.values) {
+      vvars.push_back(to_string(i) + e);
+    }
+    Or(vars[i-1], vvars);
+  }
+  And(subCondition1, vars);
+
+  write("\n");
+
+  // No two nodes are chosen at the same step
+  // (-11 v -12) ^ (-11 v -13) ^ ... ^ (-21 v -22) ^ (-21 v -23) ^ ...
+  string const subCondition2 = get();
+  vars = getMultiple(g.depth * (g.values.size() - 1));
+  for (int d = 1; d <= g.depth; ++d) {
+    string const tmp = "-" + to_string(d) + g.values[0];
+    int index = (d - 1) * (g.values.size() - 1);
+    for (int i = 1; i < g.values.size(); ++i) {
+      Or(vars[index + i - 1], {tmp, "-" + to_string(d) + g.values[i]});
+    }
+  }
+  And(subCondition2, vars);
+
+  write("\n");
+  string const condition = get();
+  And(condition, {subCondition1, subCondition2});
+  return condition;
+}
+
+void solve() {
+  Graph g;
+  g.init();
+
+  headings(g);
+  condition1(g);
+}
 
 int main() {
   clear();
-  write("#QCIR-G14\n");
-  read();
   solve();
   return 0;
 };
