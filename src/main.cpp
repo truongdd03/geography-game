@@ -37,7 +37,7 @@ void headings(Graph const &g) {
     }
   }
   Exists(odd);
-  Forall(even);
+  Exists(even);
   write("output(999)");
 }
 
@@ -46,7 +46,6 @@ string condition1(Graph const &g) {
   write("\n\n");
   // At least 1 node is chosen at every step
   // (11 v 12 v ...) ^ (21 v 22 v ...) ^ ...
-  string const subCondition1 = get();
   vector<string> vars = getMultiple(g.depth);
   for (int i = 1; i <= g.depth; ++i) {
     vector<string> vvars;
@@ -55,21 +54,26 @@ string condition1(Graph const &g) {
     }
     Or(vars[i - 1], vvars);
   }
+  string const subCondition1 = get();
   And(subCondition1, vars);
 
   write("\n");
 
   // No two nodes are chosen at the same step
-  // (-11 v -12) ^ (-11 v -13) ^ ... ^ (-21 v -22) ^ (-21 v -23) ^ ...
-  string const subCondition2 = get();
-  vars = getMultiple(g.depth * (g.values.size() - 1));
+  // (-11 v -12) ^ (-11 v -13) ^ ... ^ (-21 v -22) ^ (-21 v -23) ^ ... ^ (-12 v
+  // -13) ^ (-12 v -14) ^ ...
+  vars.clear();
   for (int d = 1; d <= g.depth; ++d) {
-    string const tmp = "-" + to_string(d) + g.values[0];
-    int index = (d - 1) * (g.values.size() - 1);
-    for (int i = 1; i < g.values.size(); ++i) {
-      Or(vars[index + i - 1], {tmp, "-" + to_string(d) + g.values[i]});
+    for (int i = 0; i < g.values.size(); ++i) {
+      string const tmp = "-" + to_string(d) + g.values[i];
+      int index = (d - 1) * (g.values.size() - 1);
+      for (int j = i + 1; j < g.values.size(); ++j) {
+        vars.push_back(get());
+        Or(vars.back(), {tmp, "-" + to_string(d) + g.values[j]});
+      }
     }
   }
+  string const subCondition2 = get();
   And(subCondition2, vars);
 
   write("\n");
@@ -78,11 +82,25 @@ string condition1(Graph const &g) {
   return condition;
 }
 
-//
-string condition2(Graph const &g) { write("\n\n"); }
+// Step i-th must not be visited before
+// (-11 v -21) ^ (-12 v -22) ^ ... ^ (-21 v -31) ^ (-22 v -32) ^ ...
+string condition2(Graph const &g) {
+  write("\n\n");
+  vector<string> vars;
+  for (int i = 1; i < g.depth; ++i) {
+    for (auto val : g.values) {
+      vars.push_back(get());
+      Or(vars.back(), {"-" + to_string(i) + val, "-" + to_string(i + 1) + val});
+    }
+  }
+
+  string const condition = get();
+  And(condition, vars);
+  return condition;
+}
 
 // Step (i-1)-th must be adjacent to step i-th
-string condition3(Graph &g) { 
+string condition3(Graph &g) {
   write("\n\n");
   vector<string> vars;
   for (int i = 2; i <= g.depth; ++i) {
@@ -119,7 +137,8 @@ void solve() {
   g.init();
 
   headings(g);
-  vector<string> vars = {condition1(g), condition3(g), condition4(g)};
+  vector<string> vars = {condition1(g), condition2(g), condition3(g),
+                         condition4(g)};
 
   write("\n\n");
   And("999", vars);

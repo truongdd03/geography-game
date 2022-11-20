@@ -13,6 +13,7 @@ using namespace std;
 class Graph {
  private:
   void read();
+  void dfs(string const &node, int h);
 
  public:
   int depth = 0;
@@ -28,14 +29,20 @@ class Graph {
 
 using namespace std;
 
+void Graph::dfs(string const &node, int h) {
+  vector<string> children = getChildren(node);
+  depth = max(depth, h);
+  for (auto c : children) {
+    dfs(c, h + 1);
+  }
+}
+
 void Graph::read() {
   cin >> root;
-  depth = 1;
 
   string u, v;
   while (cin >> u >> v) {
     edges[u][v] = 1;
-    depth = max(depth, int(edges[u].size() + 1));
     if (find(values.begin(), values.end(), u) == values.end() && u != root)
       values.push_back(u);
     if (find(values.begin(), values.end(), v) == values.end() && v != root)
@@ -43,7 +50,10 @@ void Graph::read() {
   }
 }
 
-void Graph::init() { read(); }
+void Graph::init() { 
+  read();
+  dfs(root, 0);
+}
 
 vector<string> Graph::getChildren(string const &node) {
   vector<string> children;
