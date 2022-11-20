@@ -14,4 +14,8 @@ void Or(std::string, std::vector<std::string> const &);
 
 void And(std::string, std::vector<std::string> const &);
 
+void Exists(std::vector<std::string> const &);
+
+void Forall(std::vector<std::string> const &);
+
 #endif

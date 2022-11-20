@@ -37,3 +37,15 @@ void And(string n, vector<string> const &vt) {
   addParams(vt);
   write(")\n");
 }
+
+void Exists(vector<string> const &vt) {
+  write("exists(");
+  addParams(vt);
+  write(")\n");
+}
+
+void Forall(vector<string> const &vt) {
+  write("forall(");
+  addParams(vt);
+  write(")\n");
+}

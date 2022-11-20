@@ -9,11 +9,9 @@
 
 using namespace std;
 
-int variable = 100; // Start at 100
+int variable = 100;  // Start at 100
 
-string get() {
-  return to_string(variable++);
-}
+string get() { return to_string(variable++); }
 
 vector<string> getMultiple(int cnt) {
   vector<string> vt;
@@ -26,11 +24,20 @@ vector<string> getMultiple(int cnt) {
 
 void headings(Graph const &g) {
   write("#QCIR-G14\n");
+  vector<string> even, odd;
   for (int i = 1; i <= g.depth; ++i) {
     if (i % 2 == 0) {
-      
+      for (auto e : g.values) {
+        even.push_back(to_string(i) + e);
+      }
+    } else {
+      for (auto e : g.values) {
+        odd.push_back(to_string(i) + e);
+      }
     }
   }
+  Exists(odd);
+  Forall(even);
 }
 
 // Exactly one node is chosen at each step
@@ -45,7 +52,7 @@ string condition1(Graph const &g) {
     for (auto e : g.values) {
       vvars.push_back(to_string(i) + e);
     }
-    Or(vars[i-1], vvars);
+    Or(vars[i - 1], vvars);
   }
   And(subCondition1, vars);
 
