@@ -33,10 +33,12 @@
 
 ### Run
 
-To run: `make run`
+To run (generate QBF formula): `make run`
 
 The input is taken from `./input.txt`.
 The output is redirected to `./test.qcir`.
+
+To run QBF solver: `./lib/quabs --partial-assignment ./test.qcir`
 
 ## Input format
 
