@@ -41,28 +41,12 @@ void headings(Graph const &g) {
   write("output(999)\n");
 }
 
-// Exactly one node is chosen at each step
+// No two nodes are chosen at the same step
 string condition1(Graph const &g) {
   write("\n#Condition 1\n");
-  // At least 1 node is chosen at every step
-  // (11 v 12 v ...) ^ (21 v 22 v ...) ^ ...
-  vector<string> vars = getMultiple(g.depth);
-  // for (int i = 1; i <= g.depth; ++i) {
-  //   vector<string> vvars;
-  //   for (auto e : g.values) {
-  //     vvars.push_back(to_string(i) + e);
-  //   }
-  //   Or(vars[i - 1], vvars);
-  // }
-  // string const subCondition1 = get();
-  // And(subCondition1, vars);
-
-  // write("\n");
-
-  // No two nodes are chosen at the same step
   // (-11 v -12) ^ (-11 v -13) ^ ... ^ (-21 v -22) ^ (-21 v -23) ^ ... ^ (-12 v
   // -13) ^ (-12 v -14) ^ ...
-  vars.clear();
+  vector<string> vars;
   for (int d = 1; d <= g.depth; ++d) {
     for (int i = 0; i < g.values.size(); ++i) {
       string const tmp = "-" + to_string(d) + g.values[i];
@@ -73,13 +57,9 @@ string condition1(Graph const &g) {
       }
     }
   }
-  string const subCondition2 = get();
-  And(subCondition2, vars);
-
-  write("\n");
   string const condition = get();
-  // And(condition, {subCondition1, subCondition2});
-  return subCondition2;
+  And(condition, vars);
+  return condition;
 }
 
 // Step i-th must not be visited before
@@ -119,10 +99,30 @@ string condition3(Graph &g) {
   return condition;
 }
 
-// First step must be adjacent to root
-// (11 V 12 V 13 ...)
+// Step i-th must be adjacent to step (i-1)-th
 string condition4(Graph &g) {
   write("\n#Condition 4\n");
+  vector<string> vars;
+  for (int i = 2; i <= g.depth; ++i) {
+    for (auto node : g.values) {
+      vector<string> parents = g.getParents(node);
+      if (parents.size() == 0) continue;
+      for (string &parent : parents) parent = to_string(i - 1) + parent;
+
+      parents.push_back("-" + to_string(i) + node);
+      vars.push_back(get());
+      Or(vars.back(), parents);
+    }
+  }
+  string const condition = get();
+  And(condition, vars);
+  return condition;
+}
+
+// First step must be adjacent to root
+// (11 V 12 V 13 ...)
+string condition5(Graph &g) {
+  write("\n#Condition 5\n");
   vector<string> vars;
   for (string const &node : g.getChildren(g.root)) {
     vars.push_back("1" + node);
@@ -133,8 +133,8 @@ string condition4(Graph &g) {
 }
 
 // Winning condition
-string condition5(Graph &g) {
-  write("\n#Condition 5\n");
+string condition6(Graph &g) {
+  write("\n#Condition 6\n");
   vector<string> vars;
   for (int i = 1; i < g.depth; i += 2) {
     // (i1 v i2 v ...) ^ -(i+1)1 ^ -(i+1)2 ^ ... ^ -(i+2)1 ^ ...
@@ -156,26 +156,6 @@ string condition5(Graph &g) {
   }
   string const condition = get();
   Or(condition, vars);
-  return condition;
-}
-
-// Step i-th must be adjacent to step (i-1)-th
-string condition6(Graph &g) {
-  write("\n#Condition 6\n");
-  vector<string> vars;
-  for (int i = 2; i <= g.depth; ++i) {
-    for (auto node : g.values) {
-      vector<string> parents = g.getParents(node);
-      if (parents.size() == 0) continue;
-      for (string &parent : parents) parent = to_string(i - 1) + parent;
-
-      parents.push_back("-" + to_string(i) + node);
-      vars.push_back(get());
-      Or(vars.back(), parents);
-    }
-  }
-  string const condition = get();
-  And(condition, vars);
   return condition;
 }
 
