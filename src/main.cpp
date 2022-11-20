@@ -24,20 +24,13 @@ vector<string> getMultiple(int cnt) {
 
 void headings(Graph const &g) {
   write("#QCIR-G14\n");
-  vector<string> even, odd;
+  vector<string> vars;
   for (int i = 1; i <= g.depth; ++i) {
-    if (i % 2 == 0) {
       for (auto e : g.values) {
-        even.push_back(to_string(i) + e);
+        vars.push_back(to_string(i) + e);
       }
-    } else {
-      for (auto e : g.values) {
-        even.push_back(to_string(i) + e);
-      }
-    }
   }
-  // Exists(odd);
-  Exists(even);
+  Exists(vars);
   write("output(999)\n");
 }
 
