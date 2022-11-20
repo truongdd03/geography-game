@@ -36,7 +36,11 @@ void processResult(string const &result) {
   while (iss >> val) {
     if (val == "r") return;
     if (val.length() != 2) continue;
-    cout << "Step " << val[0] << ": choose " << val[1] << "\n"; 
+    if ((val[0] - '0') % 2 == 1) cout << "Player 1 ";
+    else {
+      cout << "Player 2 ";
+    }
+    cout << "chooses " << val[1] << "\n";
   }
 }
 
