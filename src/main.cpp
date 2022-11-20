@@ -1,12 +1,21 @@
 #include <iostream>
 #include <fstream>
+#include <vector>
+
+#include <operators.h>
 
 using namespace std;
 
+void read() {
+    
+}
+
+void solve() {
+
+}
+
 int main() {
-    ofstream file;
-    file.open("./test.qcir");
-    file << "haha";
-    file.close();
+    write("#QCIR-G14\n");
+    solve();
     return 0;
 };
