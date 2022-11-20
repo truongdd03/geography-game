@@ -32,32 +32,32 @@ void headings(Graph const &g) {
       }
     } else {
       for (auto e : g.values) {
-        odd.push_back(to_string(i) + e);
+        even.push_back(to_string(i) + e);
       }
     }
   }
-  Exists(odd);
+  // Exists(odd);
   Exists(even);
-  write("output(999)");
+  write("output(999)\n");
 }
 
 // Exactly one node is chosen at each step
 string condition1(Graph const &g) {
-  write("\n\n");
+  write("\n#Condition 1\n");
   // At least 1 node is chosen at every step
   // (11 v 12 v ...) ^ (21 v 22 v ...) ^ ...
   vector<string> vars = getMultiple(g.depth);
-  for (int i = 1; i <= g.depth; ++i) {
-    vector<string> vvars;
-    for (auto e : g.values) {
-      vvars.push_back(to_string(i) + e);
-    }
-    Or(vars[i - 1], vvars);
-  }
-  string const subCondition1 = get();
-  And(subCondition1, vars);
+  // for (int i = 1; i <= g.depth; ++i) {
+  //   vector<string> vvars;
+  //   for (auto e : g.values) {
+  //     vvars.push_back(to_string(i) + e);
+  //   }
+  //   Or(vars[i - 1], vvars);
+  // }
+  // string const subCondition1 = get();
+  // And(subCondition1, vars);
 
-  write("\n");
+  // write("\n");
 
   // No two nodes are chosen at the same step
   // (-11 v -12) ^ (-11 v -13) ^ ... ^ (-21 v -22) ^ (-21 v -23) ^ ... ^ (-12 v
@@ -78,14 +78,14 @@ string condition1(Graph const &g) {
 
   write("\n");
   string const condition = get();
-  And(condition, {subCondition1, subCondition2});
-  return condition;
+  // And(condition, {subCondition1, subCondition2});
+  return subCondition2;
 }
 
 // Step i-th must not be visited before
 // (-11 v -21) ^ (-12 v -22) ^ ... ^ (-21 v -31) ^ (-22 v -32) ^ ...
 string condition2(Graph const &g) {
-  write("\n\n");
+  write("\n#Condition 2\n");
   vector<string> vars;
   for (int i = 1; i < g.depth; ++i) {
     for (auto val : g.values) {
@@ -101,7 +101,7 @@ string condition2(Graph const &g) {
 
 // Step i-th must be adjacent to step (i+1)-th
 string condition3(Graph &g) {
-  write("\n\n");
+  write("\n#Condition 3\n");
   vector<string> vars;
   for (int i = 1; i < g.depth; ++i) {
     for (auto node : g.values) {
@@ -122,13 +122,60 @@ string condition3(Graph &g) {
 // First step must be adjacent to root
 // (11 V 12 V 13 ...)
 string condition4(Graph &g) {
-  write("\n\n");
-  string const condition = get();
+  write("\n#Condition 4\n");
   vector<string> vars;
   for (string const &node : g.getChildren(g.root)) {
     vars.push_back("1" + node);
   }
+  string const condition = get();
   Or(condition, vars);
+  return condition;
+}
+
+// Winning condition
+string condition5(Graph &g) {
+  write("\n#Condition 5\n");
+  vector<string> vars;
+  for (int i = 1; i < g.depth; i += 2) {
+    // (i1 v i2 v ...) ^ -(i+1)1 ^ -(i+1)2 ^ ... ^ -(i+2)1 ^ ...
+    vector<string> tmp = g.values;
+    for (string &e : tmp) e = to_string(i) + e;
+    string const subCondition = get();
+    Or(subCondition, tmp);
+
+    vector<string> tmp1;
+    for (int j = i + 1; j <= g.depth; ++j) {
+      for (string const &e : g.values) {
+        tmp1.push_back("-" + to_string(j) + e);
+      }
+    }
+    tmp1.push_back(subCondition);
+
+    vars.push_back(get());
+    And(vars.back(), tmp1);
+  }
+  string const condition = get();
+  Or(condition, vars);
+  return condition;
+}
+
+// Step i-th must be adjacent to step (i-1)-th
+string condition6(Graph &g) {
+  write("\n#Condition 6\n");
+  vector<string> vars;
+  for (int i = 2; i <= g.depth; ++i) {
+    for (auto node : g.values) {
+      vector<string> parents = g.getParents(node);
+      if (parents.size() == 0) continue;
+      for (string &parent : parents) parent = to_string(i - 1) + parent;
+
+      parents.push_back("-" + to_string(i) + node);
+      vars.push_back(get());
+      Or(vars.back(), parents);
+    }
+  }
+  string const condition = get();
+  And(condition, vars);
   return condition;
 }
 
@@ -138,7 +185,7 @@ void solve() {
 
   headings(g);
   vector<string> vars = {condition1(g), condition2(g), condition3(g),
-                         condition4(g)};
+                         condition4(g), condition5(g), condition6(g)};
 
   write("\n\n");
   And("999", vars);

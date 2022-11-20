@@ -52,7 +52,7 @@ void Graph::read() {
 
 void Graph::init() { 
   read();
-  dfs(root, 0);
+  dfs(root, 1);
 }
 
 vector<string> Graph::getChildren(string const &node) {
