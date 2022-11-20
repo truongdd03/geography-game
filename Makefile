@@ -13,7 +13,6 @@ all: $(BIN)/$(EXECUTABLE)
 run: clean all
 	clear
 	./$(BIN)/$(EXECUTABLE) < ./input.txt
-	./lib/quabs --partial-assignment ./test.qcir
 
 solve: clean all
 	./lib/quabs --partial-assignment ./test.qcir

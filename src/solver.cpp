@@ -152,7 +152,9 @@ string condition6(Graph &g) {
   return condition;
 }
 
-void solve() {
+void generateFormula() {
+  clear();
+
   Graph g;
   g.init();
 
