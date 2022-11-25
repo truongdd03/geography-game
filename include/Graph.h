@@ -13,7 +13,7 @@ using namespace std;
 class Graph {
  private:
   void read();
-  void dfs(string const &node, int h);
+  void dfs(string const &node, int h, unordered_map<string, bool> &visited);
 
  public:
   int depth = 0;
@@ -29,11 +29,14 @@ class Graph {
 
 using namespace std;
 
-void Graph::dfs(string const &node, int h) {
+void Graph::dfs(string const &node, int h, unordered_map<string, bool> &visited) {
+  if (visited.find(node) != visited.end()) return;
+  visited[node] = true;
+
   vector<string> children = getChildren(node);
   depth = max(depth, h);
   for (auto c : children) {
-    dfs(c, h + 1);
+    dfs(c, h + 1, visited);
   }
 }
 
@@ -52,7 +55,8 @@ void Graph::read() {
 
 void Graph::init() { 
   read();
-  dfs(root, 1);
+  unordered_map<string, bool> visited;
+  dfs(root, 1, visited);
 }
 
 vector<string> Graph::getChildren(string const &node) {
