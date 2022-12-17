@@ -46,7 +46,7 @@ void processResult(string const &result) {
 
 int main() {
   generateFormula();
-  string const &result = exec("./lib/quabs --partial-assignment ./test.qcir");
+  string const result = exec("./lib/quabs --partial-assignment ./test.qcir");
   processResult(result);
 
   return 0;
