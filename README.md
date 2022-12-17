@@ -1,16 +1,24 @@
 # geography-game
 
+This program works for any graph with nodes labeled from 0-9. The game is encoded into 6 conditions (see `./src/solver.cpp` for details):
+- Condition 1: No two nodes are chosen at the same step
+- Condition 2: Step i-th must not be visited before
+- Condition 3: Step i-th must be adjacent to step (i+1)-th
+- Condition 4: Step i-th must be adjacent to step (i-1)-th
+- Condition 5: First step must be adjacent to root
+- Condition 6: Winning condition
+
 ## Commands
 
 ### Run
 
-`make run`: convert the graph to formulas and use the QBF solver to solve it.
+`make run`: converts the graph to qucir formulas and use the QBF solver to solve.
 
 The input is taken from `./input.txt`.
 The formula can be found at `./test.qcir`.
 
 ### Solve
-`make solve`: run QBF solver without generating the formula.
+`make solve`: runs QBF solver without generating the formula.
 
 ## Input format
 
@@ -34,7 +42,7 @@ Ex:
 
 ## Ouput format
 
-If there's a way for the first user to win, print out the steps.
+If there's a way for the first user to win, prints out the steps.
 
 **Ex:** the output of the graph above:
 
@@ -43,33 +51,3 @@ Player 1 chooses 1
 Player 2 chooses 3
 Player 1 chooses 6
 ```
-
-## Internal Usage
-
-### Operators.h > Exists
-`Exists(vector<string> arr)` => exists(arr[0], arr[1], ...)
-
-### Operators.h > Forall
-`Forall(vector<string> arr)` => forall(arr[0], arr[1], ...)
-
-### Operators.h > And
-
-`And(string n, vector<string> arr)` => n = and(arr[0], arr[1], ...)
-
-### Operators.h > Or
-
-`Or(string n, vector<string> or)` => n = or(arr[0], arr[1], ...)
-
-### Operators.h > write
-
-`write(string s)` => write a string to `./test.qcir`.
-
-### solver.cpp > get
-
-`get()` returns the next unused variable.
-
-### solver.cpp > getMultiple
-
-`getMultiple(int cnt)` return a vector contains `cnt` unused variables.
-
-
